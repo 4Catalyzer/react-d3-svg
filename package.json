@@ -1,0 +1,38 @@
+{
+  "name": "react-d3-svg",
+  "version": "0.0.0",
+  "description": "D3 SVG components for React",
+  "files": [
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "npm run lint && babel src --out-dir lib",
+    "lint": "eslint src",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taion/react-d3-svg.git"
+  },
+  "keywords": [
+    "react",
+    "react-component",
+    "d3"
+  ],
+  "author": "Jimmy Jia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/taion/react-d3-svg/issues"
+  },
+  "homepage": "https://github.com/taion/react-d3-svg#readme",
+  "devDependencies": {
+    "babel": "^5.8.21",
+    "babel-eslint": "^4.0.10",
+    "eslint": "^1.2.0",
+    "eslint-config-defaults": "^4.1.0",
+    "eslint-plugin-react": "^3.2.3"
+  }
+}
