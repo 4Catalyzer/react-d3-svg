@@ -7,6 +7,7 @@ import {cloneChildren} from './ElementUtils';
 export default class ZoomArea extends React.Component {
   static propTypes = {
     zoom: React.PropTypes.func.isRequired,
+    clipPathId: React.PropTypes.string,
     children: React.PropTypes.node
   };
 
@@ -92,16 +93,25 @@ export default class ZoomArea extends React.Component {
   }
 
   render() {
-    const {children, ...props} = this.props;
+    const {clipPathId, children, ...props} = this.props;
     const {width, height} = this.context;
 
-    return (
-      <g clipPath="url(#clip)" {...props}>
+    let clipPath;
+    let clipPathDef;
+    if (clipPathId) {
+      clipPath = `url(#${clipPathId})`;
+      clipPathDef = (
         <defs>
-          <clipPath id="clip">
+          <clipPath id={clipPathId}>
             <rect width={width} height={height} />
           </clipPath>
         </defs>
+      );
+    }
+
+    return (
+      <g clipPath={clipPath} {...props}>
+        {clipPathDef}
 
         <rect
           width={width} height={height}
