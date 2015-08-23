@@ -1,0 +1,171 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import {throttle} from './AnimationUtils';
+import {cloneChildren} from './ElementUtils';
+
+export default class Plot extends React.Component {
+  static propTypes = {
+    width: React.PropTypes.number,
+    height: React.PropTypes.number,
+    marginTop: React.PropTypes.number.isRequired,
+    marginRight: React.PropTypes.number.isRequired,
+    marginBottom: React.PropTypes.number.isRequired,
+    marginLeft: React.PropTypes.number.isRequired,
+    xScale: React.PropTypes.func,
+    yScale: React.PropTypes.func,
+    children: React.PropTypes.node
+  };
+
+  static childContextTypes = {
+    width: React.PropTypes.number,
+    height: React.PropTypes.number,
+    xScale: React.PropTypes.func,
+    yScale: React.PropTypes.func
+  };
+
+  static defaultProps = {
+    marginTop: 0,
+    marginRight: 0,
+    marginBottom: 0,
+    marginLeft: 0
+  };
+
+  constructor(props, context) {
+    super(props, context);
+
+    const {width, height} = props;
+    this.state = {width, height};
+
+    this.hasResizeListener = false;
+  }
+
+  getChildContext() {
+    const {xScale, yScale} = this.props;
+    return {xScale, yScale, ...this.getBodyDimensions()};
+  }
+
+  componentWillMount() {
+    this.updateScales(this.props, this.state);
+  }
+
+  componentDidMount() {
+    this.updateSize();
+    this.syncResizeListener();
+  }
+
+  componentWillReceiveProps({width, height}) {
+    if (width != null) {
+      this.setState({width});
+    }
+    if (height != null) {
+      this.setState({height});
+    }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    this.updateScales(nextProps, nextState);
+  }
+
+  componentDidUpdate() {
+    this.syncResizeListener();
+  }
+
+  componentWillUnmount() {
+    this.removeResizeListener();
+  }
+
+  onResize = throttle(() => {
+    this.updateSize();
+  });
+
+  getBodyDimensions({width: totalWidth, height: totalHeight} = this.state) {
+    let width;
+    let height;
+
+    if (totalWidth != null) {
+      const {marginLeft, marginRight} = this.props;
+      width = totalWidth - marginLeft - marginRight;
+    }
+    if (totalHeight != null) {
+      const {marginTop, marginBottom} = this.props;
+      height = totalHeight - marginTop - marginBottom;
+    }
+
+    return {width, height};
+  }
+
+  updateScales({xScale, yScale}, state) {
+    const {width, height} = this.getBodyDimensions(state);
+    if (xScale && width != null) {
+      xScale.range([0, width]);
+    }
+    if (yScale && height != null) {
+      yScale.range([height, 0]);
+    }
+  }
+
+  updateSize() {
+    const {width: propsWidth, height: propsHeight} = this.props;
+    if (propsWidth != null && propsHeight != null) {
+      return;
+    }
+
+    const {width: lastWidth, height: lastHeight} = this.state;
+    const {width, height} = ReactDOM.findDOMNode(this).getBoundingClientRect();
+
+    if (propsWidth == null && width !== lastWidth) {
+      this.setState({width});
+    }
+    if (propsHeight == null && height !== lastHeight) {
+      this.setState({height});
+    }
+  }
+
+  syncResizeListener() {
+    const {width, height} = this.props;
+    if (width == null || height == null) {
+      this.addResizeListener();
+    } else {
+      this.removeResizeListener();
+    }
+  }
+
+  addResizeListener() {
+    if (!this.hasResizeListener) {
+      // FIXME: Use proper element resize detection.
+      window.addEventListener('resize', this.onResize);
+      this.hasResizeListener = true;
+    }
+  }
+
+  removeResizeListener() {
+    if (this.hasResizeListener) {
+      window.removeEventListener('resize', this.onResize);
+      this.hasResizeListener = false;
+    }
+  }
+
+  render() {
+    const {marginTop, marginLeft, children, ...props} = this.props;
+
+    const {width, height} = this.state;
+    let plotBody;
+
+    if (width != null && height != null) {
+      plotBody = (
+        <g transform={`translate(${marginLeft},${marginTop})`}>
+          {cloneChildren(children)}
+        </g>
+      );
+    } else {
+      plotBody = null;
+    }
+
+    return (
+      <svg {...props}>
+        {plotBody}
+      </svg>
+    );
+  }
+}

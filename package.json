@@ -31,8 +31,13 @@
   "devDependencies": {
     "babel": "^5.8.21",
     "babel-eslint": "^4.0.10",
-    "eslint": "^1.2.0",
-    "eslint-config-defaults": "^4.1.0",
-    "eslint-plugin-react": "^3.2.3"
+    "eslint": "^1.2.1",
+    "eslint-config-airbnb": "0.0.8",
+    "eslint-plugin-react": "^3.2.3",
+    "react": "^0.14.0-beta3",
+    "react-dom": "^0.14.0-beta3"
+  },
+  "dependencies": {
+    "babel-runtime": "^5.8.20"
   }
 }

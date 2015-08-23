@@ -1,9 +1,7 @@
 {
-  "extends": "defaults/configurations/airbnb",
+  "extends": "airbnb",
   "rules": {
     "comma-dangle": 0,
-
-    "react/prop-types": 0,
-    "react/sort-comp": 0
+    "no-eq-null": 0
   }
 }
