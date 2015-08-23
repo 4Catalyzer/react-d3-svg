@@ -2,7 +2,7 @@ import d3 from 'd3';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {cloneChildren} from './ElementUtils';
+import cloneChildren from './utils/cloneChildren';
 
 export default class ZoomArea extends React.Component {
   static propTypes = {

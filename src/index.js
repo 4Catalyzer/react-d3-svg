@@ -6,6 +6,4 @@ export YAxis from './YAxis';
 export ZoomArea from './ZoomArea';
 
 export * as PropTypes from './PropTypes';
-
-export * as AnimationUtils from './AnimationUtils';
-export * as ElementUtils from './ElementUtils';
+export * as utils from './utils';

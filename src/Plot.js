@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {throttle} from './AnimationUtils';
-import {cloneChildren} from './ElementUtils';
+import cloneChildren from './utils/cloneChildren';
+import throttle from './utils/throttle';
 
 export default class Plot extends React.Component {
   static propTypes = {

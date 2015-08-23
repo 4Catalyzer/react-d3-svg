@@ -1,4 +1,4 @@
-export function throttle(callback) {
+export default function throttle(callback) {
   let pending = false;
 
   return (...args) => {
