@@ -7,13 +7,15 @@ import cloneChildren from './utils/cloneChildren';
 export default class ZoomArea extends React.Component {
   static propTypes = {
     zoom: React.PropTypes.func.isRequired,
+    onZoom: React.PropTypes.func,
     clipPathId: React.PropTypes.string,
     children: React.PropTypes.node
   };
 
   static contextTypes = {
     width: React.PropTypes.number.isRequired,
-    height: React.PropTypes.number.isRequired
+    height: React.PropTypes.number.isRequired,
+    redraw: React.PropTypes.func.isRequired
   };
 
   constructor(props, context) {
@@ -36,6 +38,16 @@ export default class ZoomArea extends React.Component {
     } else {
       this.yRangeSize = null;
     }
+
+    // TODO: Handle when zoom object changes.
+    zoom.on('zoom', () => {
+      const {onZoom} = this.props;
+      if (onZoom) {
+        onZoom();
+      }
+
+      this.context.redraw();
+    });
   }
 
   componentWillMount() {

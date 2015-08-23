@@ -21,7 +21,8 @@ export default class Plot extends React.Component {
     width: React.PropTypes.number,
     height: React.PropTypes.number,
     xScale: React.PropTypes.func,
-    yScale: React.PropTypes.func
+    yScale: React.PropTypes.func,
+    redraw: React.PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -42,7 +43,10 @@ export default class Plot extends React.Component {
 
   getChildContext() {
     const {xScale, yScale} = this.props;
-    return {xScale, yScale, ...this.getBodyDimensions()};
+    const {width, height} = this.getBodyDimensions();
+    const {redraw} = this;
+
+    return {xScale, yScale, width, height, redraw};
   }
 
   componentWillMount() {
@@ -145,6 +149,10 @@ export default class Plot extends React.Component {
       this.hasResizeListener = false;
     }
   }
+
+  redraw = throttle(() => {
+    this.forceUpdate();
+  });
 
   render() {
     const {marginTop, marginLeft, children, ...props} = this.props;
