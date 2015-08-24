@@ -2,20 +2,32 @@ import d3 from 'd3';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import * as PropTypes from './PropTypes';
 import cloneChildren from './utils/cloneChildren';
+import transforms from './utils/transforms';
 
 export default class ZoomArea extends React.Component {
   static propTypes = {
     zoom: React.PropTypes.func.isRequired,
     onZoom: React.PropTypes.func,
+    region: PropTypes.region.isRequired,
     clipPathId: React.PropTypes.string,
+    transform: React.PropTypes.string,
     children: React.PropTypes.node
   };
 
   static contextTypes = {
     width: React.PropTypes.number.isRequired,
     height: React.PropTypes.number.isRequired,
+    marginTop: React.PropTypes.number.isRequired,
+    marginRight: React.PropTypes.number.isRequired,
+    marginBottom: React.PropTypes.number.isRequired,
+    marginLeft: React.PropTypes.number.isRequired,
     redraw: React.PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    region: 'center'
   };
 
   constructor(props, context) {
@@ -104,9 +116,44 @@ export default class ZoomArea extends React.Component {
     zoom.translate(translate);
   }
 
+  calculatePosition() {
+    const {region} = this.props;
+
+    let {width, height} = this.context;
+    if (region === 'center') {
+      return {width, height};
+    }
+
+    let translateX = 0;
+    let translateY = 0;
+
+    if (region === 'top') {
+      const {marginTop} = this.context;
+      translateY = -marginTop;
+      height = marginTop;
+    } else if (region === 'right') {
+      const {marginRight} = this.context;
+      translateX = width;
+      width = marginRight;
+    } else if (region === 'bottom') {
+      const {marginBottom} = this.context;
+      translateY = height;
+      height = marginBottom;
+    } else if (region === 'left') {
+      const {marginLeft} = this.context;
+      translateX = -marginLeft;
+      width = marginLeft;
+    }
+
+    return {
+      positionTransform: `translate(${translateX},${translateY})`,
+      width, height
+    };
+  }
+
   render() {
-    const {clipPathId, children, ...props} = this.props;
-    const {width, height} = this.context;
+    const {clipPathId, transform, children, ...props} = this.props;
+    const {positionTransform, width, height} = this.calculatePosition();
 
     let clipPath;
     let clipPathDef;
@@ -122,7 +169,11 @@ export default class ZoomArea extends React.Component {
     }
 
     return (
-      <g clipPath={clipPath} {...props}>
+      <g
+        transform={transforms(transform, positionTransform)}
+        clipPath={clipPath}
+        {...props}
+      >
         {clipPathDef}
 
         <rect

@@ -20,6 +20,10 @@ export default class Plot extends React.Component {
   static childContextTypes = {
     width: React.PropTypes.number,
     height: React.PropTypes.number,
+    marginTop: React.PropTypes.number.isRequired,
+    marginRight: React.PropTypes.number.isRequired,
+    marginBottom: React.PropTypes.number.isRequired,
+    marginLeft: React.PropTypes.number.isRequired,
     xScale: React.PropTypes.func,
     yScale: React.PropTypes.func,
     redraw: React.PropTypes.func.isRequired
@@ -42,11 +46,19 @@ export default class Plot extends React.Component {
   }
 
   getChildContext() {
-    const {xScale, yScale} = this.props;
     const {width, height} = this.getBodyDimensions();
+    const {
+      marginTop, marginRight, marginLeft, marginBottom,
+      xScale, yScale
+    } = this.props;
     const {redraw} = this;
 
-    return {xScale, yScale, width, height, redraw};
+    return {
+      width, height,
+      marginTop, marginRight, marginLeft, marginBottom,
+      xScale, yScale,
+      redraw
+    };
   }
 
   componentWillMount() {

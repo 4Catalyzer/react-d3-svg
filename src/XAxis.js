@@ -2,6 +2,7 @@ import React from 'react';
 
 import Axis from './Axis';
 import * as PropTypes from './PropTypes';
+import transforms from './utils/transforms';
 
 export default class XAxis extends React.Component {
   static propTypes = {
@@ -39,7 +40,7 @@ export default class XAxis extends React.Component {
     return (
       <Axis
         scale={this.context.xScale}
-        transform={[transform, positionTransform].join('')}
+        transform={transforms(transform, positionTransform)}
         {...props}
       />
     );

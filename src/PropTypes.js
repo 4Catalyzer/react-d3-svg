@@ -1,7 +1,9 @@
 import React from 'react';
 
-export const direction = React.PropTypes.oneOf(
-  ['top', 'right', 'bottom', 'left']
-);
+const DIRECTIONS = ['top', 'right', 'bottom', 'left'];
+
+export const direction = React.PropTypes.oneOf(DIRECTIONS);
 
 export const position = React.PropTypes.oneOf(['start', 'origin', 'end']);
+
+export const region = React.PropTypes.oneOf(['center', ...DIRECTIONS]);
