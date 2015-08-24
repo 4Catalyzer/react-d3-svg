@@ -25,16 +25,16 @@ export default class XAxis extends React.Component {
       positionTransform = null;
     } else {
       const {yScale} = this.context;
-      let translateY;
+      let yTranslate;
 
       if (position === 'start') {
-        translateY = yScale.range()[0];
+        yTranslate = yScale.range()[0];
       } else if (position === 'origin') {
-        translateY = yScale(0);
+        yTranslate = yScale(0);
       } else {
-        translateY = yScale.range()[1];
+        yTranslate = yScale.range()[1];
       }
-      positionTransform = `translate(0,${translateY})`;
+      positionTransform = `translate(0,${yTranslate})`;
     }
 
     return (

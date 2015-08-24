@@ -116,29 +116,29 @@ export default class ZoomArea extends React.Component {
       return {width, height};
     }
 
-    let translateX = 0;
-    let translateY = 0;
+    let xTranslate = 0;
+    let yTranslate = 0;
 
     if (region === 'top') {
       const {marginTop} = this.context;
-      translateY = -marginTop;
+      yTranslate = -marginTop;
       height = marginTop;
     } else if (region === 'right') {
       const {marginRight} = this.context;
-      translateX = width;
+      xTranslate = width;
       width = marginRight;
     } else if (region === 'bottom') {
       const {marginBottom} = this.context;
-      translateY = height;
+      yTranslate = height;
       height = marginBottom;
     } else if (region === 'left') {
       const {marginLeft} = this.context;
-      translateX = -marginLeft;
+      xTranslate = -marginLeft;
       width = marginLeft;
     }
 
     return {
-      positionTransform: `translate(${translateX},${translateY})`,
+      positionTransform: `translate(${xTranslate},${yTranslate})`,
       width, height
     };
   }

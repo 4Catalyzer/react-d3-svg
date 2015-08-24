@@ -25,16 +25,16 @@ export default class YAxis extends React.Component {
       positionTransform = null;
     } else {
       const {xScale} = this.context;
-      let translateX;
+      let xTranslate;
 
       if (position === 'start') {
-        translateX = xScale.range()[0];
+        xTranslate = xScale.range()[0];
       } else if (position === 'origin') {
-        translateX = xScale(0);
+        xTranslate = xScale(0);
       } else {
-        translateX = xScale.range()[1];
+        xTranslate = xScale.range()[1];
       }
-      positionTransform = `translate(${translateX}, 0)`;
+      positionTransform = `translate(${xTranslate}, 0)`;
     }
 
     return (

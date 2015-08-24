@@ -1,7 +1,7 @@
-export default function throttle(callback) {
+export default function throttleAnimation(callback) {
   let pending = false;
 
-  return (...args) => {
+  return () => {
     if (pending) {
       return;
     }
@@ -9,7 +9,7 @@ export default function throttle(callback) {
 
     window.requestAnimationFrame(() => {
       pending = false;
-      callback(...args);
+      callback();
     });
   };
 }

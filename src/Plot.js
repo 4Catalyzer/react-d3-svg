@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import cloneChildren from './utils/cloneChildren';
-import throttle from './utils/throttle';
+import throttleAnimation from './utils/throttleAnimation';
 
 export default class Plot extends React.Component {
   static propTypes = {
@@ -91,7 +91,7 @@ export default class Plot extends React.Component {
     this.removeResizeListener();
   }
 
-  onResize = throttle(() => {
+  onResize = throttleAnimation(() => {
     this.updateSize();
   });
 
@@ -162,7 +162,7 @@ export default class Plot extends React.Component {
     }
   }
 
-  redraw = throttle(() => {
+  redraw = throttleAnimation(() => {
     this.forceUpdate();
   });
 

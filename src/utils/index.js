@@ -1,3 +1,3 @@
 export cloneChildren from './cloneChildren';
-export throttle from './throttle';
+export throttleAnimation from './throttleAnimation';
 export transforms from './transforms';
