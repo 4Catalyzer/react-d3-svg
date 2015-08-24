@@ -168,18 +168,15 @@ export default class Plot extends React.Component {
 
   render() {
     const {marginTop, marginLeft, children, ...props} = this.props;
-
     const {width, height} = this.state;
-    let plotBody;
 
+    let plotBody;
     if (width != null && height != null) {
       plotBody = (
         <g transform={`translate(${marginLeft},${marginTop})`}>
           {cloneChildren(children)}
         </g>
       );
-    } else {
-      plotBody = null;
     }
 
     return (

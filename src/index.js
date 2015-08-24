@@ -1,5 +1,6 @@
 export Axis from './Axis';
 export Plot from './Plot';
+export PlotCanvas from './PlotCanvas';
 export PlotWithCanvas from './PlotWithCanvas';
 export XAxis from './XAxis';
 export YAxis from './YAxis';

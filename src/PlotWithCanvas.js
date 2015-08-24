@@ -1,5 +1,7 @@
 import React from 'react';
+
 import Plot from './Plot';
+import cloneChildren from './utils/cloneChildren';
 
 // TODO: Use PlotCanvas component once Chrome fixes foreignObject rendering.
 
@@ -7,7 +9,7 @@ export default class PlotWithCanvas extends Plot {
   static propTypes = {
     ...Plot.propTypes,
 
-    onRedrawCanvas: React.PropTypes.func,
+    canvas: React.PropTypes.node,
 
     // Placate ESLint.
     marginTop: Plot.propTypes.marginTop,
@@ -17,58 +19,32 @@ export default class PlotWithCanvas extends Plot {
   static childContextTypes = Plot.childContextTypes;
   static defaultProps = Plot.defaultProps;
 
-  componentDidMount() {
-    super.componentDidMount();
-    this.redrawCanvas();
-  }
-
-  componentDidUpdate() {
-    super.componentDidUpdate();
-    this.redrawCanvas();
-  }
-
-  redrawCanvas() {
-    if (!this.refs.canvas) {
-      return;
-    }
-
-    const ctx = this.refs.canvas.getContext('2d');
-
-    const {width, height} = this.getBodyDimensions();
-    ctx.clearRect(0, 0, width, height);
-
-    if (!this.props.onRedrawCanvas) {
-      return;
-    }
-
-    this.props.onRedrawCanvas(ctx);
-  }
-
   render() {
+    const {canvas} = this.props;
+    if (!canvas) {
+      return super.render();
+    }
+
     const {width, height} = this.state;
 
-    let canvas;
+    let canvasHolder;
     if (width != null && height != null) {
       const {marginTop, marginLeft} = this.props;
-      canvas = (
-        <canvas
-          ref="canvas"
-          {...this.getBodyDimensions()}
-          style={{
-            position: 'absolute',
-            top: marginTop,
-            left: marginLeft,
-            zIndex: -1
-          }}
-        />
+      canvasHolder = (
+        <div style={{
+          position: 'absolute',
+          top: marginTop,
+          left: marginLeft,
+          zIndex: -1
+        }}>
+          {cloneChildren(canvas)}
+        </div>
       );
-    } else {
-      canvas = null;
     }
 
     return (
       <div style={{position: 'relative'}}>
-        {canvas}
+        {canvasHolder}
         {super.render()}
       </div>
     );
