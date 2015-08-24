@@ -50,7 +50,7 @@ export default class ZoomArea extends React.Component {
       this.yRangeSize = null;
     }
 
-    // TODO: Handle when zoom object changes.
+    // TODO: Handle the zoom object changing.
     zoom.on('zoom.redraw', this.context.redraw);
   }
 
