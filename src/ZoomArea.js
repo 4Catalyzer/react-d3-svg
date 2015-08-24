@@ -9,7 +9,6 @@ import transforms from './utils/transforms';
 export default class ZoomArea extends React.Component {
   static propTypes = {
     zoom: React.PropTypes.func.isRequired,
-    onZoom: React.PropTypes.func,
     region: PropTypes.region.isRequired,
     clipPathId: React.PropTypes.string,
     transform: React.PropTypes.string,
@@ -52,14 +51,7 @@ export default class ZoomArea extends React.Component {
     }
 
     // TODO: Handle when zoom object changes.
-    zoom.on('zoom', () => {
-      const {onZoom} = this.props;
-      if (onZoom) {
-        onZoom();
-      }
-
-      this.context.redraw();
-    });
+    zoom.on('zoom.redraw', this.context.redraw);
   }
 
   componentWillMount() {
