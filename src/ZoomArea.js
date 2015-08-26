@@ -6,6 +6,8 @@ import * as PropTypes from './PropTypes';
 import cloneChildren from './utils/cloneChildren';
 import transforms from './utils/transforms';
 
+const REDRAW_EVENT_TYPE = 'zoom.redraw';
+
 export default class ZoomArea extends React.Component {
   static propTypes = {
     zoom: React.PropTypes.func.isRequired,
@@ -51,7 +53,11 @@ export default class ZoomArea extends React.Component {
     }
 
     // TODO: Handle the zoom object changing.
-    zoom.on('zoom.redraw', this.context.redraw);
+    let i = 0;
+    while (zoom.on(`${REDRAW_EVENT_TYPE}.${i}`)) {
+      ++i;
+    }
+    zoom.on(`${REDRAW_EVENT_TYPE}.${i}`, this.context.redraw);
   }
 
   componentWillMount() {

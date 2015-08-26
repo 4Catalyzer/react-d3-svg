@@ -1,7 +1,14 @@
 // This isn't used by the rest of this library, but it's a broadly useful
 // utility, so I'm putting it here for my benefit.
 
+const EVENT_TYPE = 'zoom.constrainDomain';
+
 export default function constrainZoomDomain(zoom) {
+  // This is a no-op if applied more than once.
+  if (zoom.on(EVENT_TYPE)) {
+    return;
+  }
+
   // Don't let user zoom out beyond initial domain - otherwise constraining
   // the domain doesn't make sense.
   const [scaleMin, scaleMax] = zoom.scaleExtent();
@@ -19,7 +26,7 @@ export default function constrainZoomDomain(zoom) {
     yMin = yScale.domain()[0];
   }
 
-  zoom.on('zoom.constrainDomain', () => {
+  zoom.on(EVENT_TYPE, () => {
     const [xTranslate, yTranslate] = zoom.translate();
     let nextXTranslate = xTranslate;
     let nextYTranslate = yTranslate;
