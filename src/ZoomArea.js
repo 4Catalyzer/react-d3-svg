@@ -2,7 +2,7 @@ import d3 from 'd3';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import * as PropTypes from './PropTypes';
+import {regionType} from './PropTypes';
 import cloneChildren from './utils/cloneChildren';
 import transforms from './utils/transforms';
 
@@ -11,7 +11,7 @@ const REDRAW_EVENT_TYPE = 'zoom.redraw';
 export default class ZoomArea extends React.Component {
   static propTypes = {
     zoom: React.PropTypes.func.isRequired,
-    region: PropTypes.region.isRequired,
+    region: regionType.isRequired,
     clipPathId: React.PropTypes.string,
     transform: React.PropTypes.string,
     children: React.PropTypes.node

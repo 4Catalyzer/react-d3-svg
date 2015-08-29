@@ -1,11 +1,11 @@
 import React from 'react';
 
-import * as PropTypes from './PropTypes';
+import {directionType} from './PropTypes';
 
 export default class Axis extends React.Component {
   static propTypes = {
     scale: React.PropTypes.func.isRequired,
-    orient: PropTypes.direction.isRequired,
+    orient: directionType.isRequired,
     innerTickSize: React.PropTypes.number.isRequired,
     outerTickSize: React.PropTypes.number.isRequired,
     tickPadding: React.PropTypes.number.isRequired,
