@@ -28,20 +28,20 @@ function createChainedComponentWillMount(originalComponentWillMount) {
   };
 }
 
-function scaleValuesEqual(scaleValues, scale) {
+function isScaleEqual(scale, scaleValues) {
   if (!scaleValues) {
     // Already checked for shallow equality before this.
     return true;
   }
 
-  const {domain, range} = scaleValues;
   const nextDomain = scale.domain();
   const nextRange = scale.range();
+  const {domain, range} = scaleValues;
 
-  return domain[0] === nextDomain[0] &&
-    domain[1] === nextDomain[1] &&
-    range[0] === nextRange[0] &&
-    range[1] === nextRange[1];
+  return nextDomain[0] === domain[0] &&
+    nextDomain[1] === domain[1] &&
+    nextRange[0] === range[0] &&
+    nextRange[1] === range[1];
 }
 
 function shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -49,8 +49,8 @@ function shouldComponentUpdate(nextProps, nextState, nextContext) {
     !shallowEqual(this.props, nextProps) ||
     !shallowEqual(this.state, nextState) ||
     !shallowEqual(this.context, nextContext) ||
-    !scaleValuesEqual(this._xScaleValues, nextContext.xScale) ||
-    !scaleValuesEqual(this._yScaleValues, nextContext.yScale);
+    !isScaleEqual(nextContext.xScale, this._xScaleValues) ||
+    !isScaleEqual(nextContext.yScale, this._yScaleValues);
   if (hasChange) {
     updateScaleValues(this, nextContext);
     return true;

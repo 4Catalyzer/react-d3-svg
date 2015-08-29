@@ -34,25 +34,13 @@ export default class ZoomArea extends React.Component {
   constructor(props, context) {
     super(props, context);
 
-    const {zoom} = props;
-    const x = zoom.x();
-    const y = zoom.y();
-
-    if (x) {
-      const xRange = x.range();
-      this.xRangeSize = xRange[1] - xRange[0];
-    } else {
-      this.xRangeSize = null;
-    }
-
-    if (y) {
-      const yRange = y.range();
-      this.yRangeSize = yRange[0] - yRange[1];
-    } else {
-      this.yRangeSize = null;
-    }
+    // Need to do initial sync in case range was updated after zoom was linked.
+    this.xRange = null;
+    this.yRange = null;
+    this.syncZoomRange();
 
     // TODO: Handle the zoom object changing.
+    const {zoom} = props;
     let i = 0;
     while (zoom.on(`${REDRAW_EVENT_TYPE}.${i}`)) {
       ++i;
@@ -60,20 +48,24 @@ export default class ZoomArea extends React.Component {
     zoom.on(`${REDRAW_EVENT_TYPE}.${i}`, this.context.redraw);
   }
 
-  componentWillMount() {
-    this.syncZoom();
-  }
-
   componentDidMount() {
     d3.select(ReactDOM.findDOMNode(this)).call(this.props.zoom);
   }
 
   componentWillUpdate() {
-    this.syncZoom();
+    this.syncZoomRange();
   }
 
-  syncZoom() {
+  syncZoomRange() {
     const {zoom} = this.props;
+    const x = zoom.x();
+    const y = zoom.y();
+
+    const hasXChange = this.hasRangeChange(x, this.xRange);
+    const hasYChange = this.hasRangeChange(y, this.yRange);
+    if (!hasXChange && !hasYChange) {
+      return;
+    }
 
     // Setting zoom axes resets scale and translate, so we need to preserve the
     // old ones.
@@ -83,28 +75,28 @@ export default class ZoomArea extends React.Component {
     zoom.scale(1);
     zoom.translate([0, 0]);
 
-    const x = zoom.x();
-    if (x) {
+    if (hasXChange) {
       // Translate is in range units; preserve domain translation here.
-      const xRange = x.range();
-      const nextXRangeSize = xRange[1] - xRange[0];
-      if (this.xRangeSize) {
-        translate[0] *= nextXRangeSize / this.xRangeSize;
+      const nextXRange = x.range();
+      if (this.xRange) {
+        const nextXRangeSize = nextXRange[1] - nextXRange[0];
+        const xRangeSize = this.xRange[1] - this.xRange[0];
+        translate[0] *= nextXRangeSize / xRangeSize;
       }
-      this.xRangeSize = nextXRangeSize;
+      this.xRange = nextXRange;
 
       zoom.x(x);
     }
 
-    const y = zoom.y();
-    if (y) {
+    if (hasYChange) {
       // Translate is in range units; preserve domain translation here.
-      const yRange = y.range();
-      const nextYRangeSize = yRange[0] - yRange[1];
-      if (this.yRangeSize) {
-        translate[1] *= nextYRangeSize / this.yRangeSize;
+      const nextYRange = y.range();
+      if (this.yRange) {
+        const nextYRangeSize = nextYRange[0] - nextYRange[1];
+        const yRangeSize = this.yRange[0] - this.yRange[1];
+        translate[1] *= nextYRangeSize / yRangeSize;
       }
-      this.yRangeSize = nextYRangeSize;
+      this.yRange = nextYRange;
 
       zoom.y(y);
     }
@@ -112,6 +104,19 @@ export default class ZoomArea extends React.Component {
     // Restore the previous zoom settings.
     zoom.scale(scale);
     zoom.translate(translate);
+  }
+
+  hasRangeChange(scale, range) {
+    if (!scale) {
+      return false;
+    }
+
+    if (!range) {
+      return true;
+    }
+
+    const nextRange = scale.range();
+    return nextRange[0] !== range[0] || nextRange[1] !== range[1];
   }
 
   calculatePosition() {
