@@ -38,6 +38,8 @@
     "react-dom": "^0.14.0-beta3"
   },
   "dependencies": {
-    "babel-runtime": "^5.8.20"
+    "babel-runtime": "^5.8.20",
+    "invariant": "^2.1.0",
+    "react-pure-render": "^1.0.2"
   }
 }

@@ -2,8 +2,10 @@ import React from 'react';
 
 import Axis from './Axis';
 import * as PropTypes from './PropTypes';
+import purePlotClass from './utils/purePlotClass';
 import transforms from './utils/transforms';
 
+@purePlotClass
 export default class XAxis extends React.Component {
   static propTypes = {
     position: PropTypes.position,
@@ -11,8 +13,6 @@ export default class XAxis extends React.Component {
   };
 
   static contextTypes = {
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
     xScale: React.PropTypes.func,
     yScale: React.PropTypes.func
   };
