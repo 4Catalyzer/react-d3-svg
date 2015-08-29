@@ -1,6 +1,6 @@
 {
   "name": "react-d3-svg",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "D3 SVG components for React",
   "files": [
     "lib",
