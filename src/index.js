@@ -1,4 +1,5 @@
 export Axis from './Axis';
+export Line from './Line';
 export Plot from './Plot';
 export PlotCanvas from './PlotCanvas';
 export PlotWithCanvas from './PlotWithCanvas';
