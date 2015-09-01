@@ -12,28 +12,29 @@ function getScaleValues(scale) {
   };
 }
 
-function updateScaleValues(element, context) {
-  element._xScaleValues = getScaleValues(context.xScale);
-  element._yScaleValues = getScaleValues(context.yScale);
+function updateScaleValues(element, values, spec) {
+  const scaleValues = {};
+  Object.keys(spec).forEach(key => {
+    scaleValues[key] = getScaleValues(spec[key](values));
+  });
+
+  element._scaleValues = scaleValues;
 }
 
-function componentWillMount() {
-  updateScaleValues(this, this.context);
+function generateComponentWillMount(spec) {
+  return function componentWillMount() {
+    updateScaleValues(this, this, spec);
+  };
 }
 
-function createChainedComponentWillMount(originalComponentWillMount) {
-  return function chainedComponentWillMount() {
-    originalComponentWillMount.call(this);
-    componentWillMount.call(this);
+function generateChainedComponentWillMount(original, spec) {
+  return function componentWillMount() {
+    original.call(this);
+    updateScaleValues(this, this, spec);
   };
 }
 
 function isScaleEqual(scale, scaleValues) {
-  if (!scaleValues) {
-    // Already checked for shallow equality before this.
-    return true;
-  }
-
   const nextDomain = scale.domain();
   const nextRange = scale.range();
   const {domain, range} = scaleValues;
@@ -44,40 +45,66 @@ function isScaleEqual(scale, scaleValues) {
     nextRange[1] === range[1];
 }
 
-function shouldComponentUpdate(nextProps, nextState, nextContext) {
-  const hasChange =
-    !shallowEqual(this.props, nextProps) ||
-    !shallowEqual(this.state, nextState) ||
-    !shallowEqual(this.context, nextContext) ||
-    !isScaleEqual(nextContext.xScale, this._xScaleValues) ||
-    !isScaleEqual(nextContext.yScale, this._yScaleValues);
-  if (hasChange) {
-    updateScaleValues(this, nextContext);
-    return true;
-  }
+function generateShouldComponentUpdate(spec) {
+  return function shouldComponentUpdate(nextProps, nextState, nextContext) {
+    const nextValues = {
+      props: nextProps,
+      state: nextState,
+      context: nextContext
+    };
 
-  return false;
+    const hasChange =
+      !shallowEqual(this.props, nextProps) ||
+      !shallowEqual(this.state, nextState) ||
+      !shallowEqual(this.context, nextContext) ||
+      Object.keys(spec).some(key =>
+        !isScaleEqual(spec[key](nextValues), this._scaleValues[key])
+      );
+
+    if (hasChange) {
+      updateScaleValues(this, nextValues, spec);
+      return true;
+    }
+
+    return false;
+  };
 }
 
-export default function purePlotClass(Component) {
-  const componentName = Component.displayName || Component.name;
-  invariant(
-    Component.prototype,
-    `pureRelayClass: \`${componentName}\` does not have a prototype`
-  );
-  invariant(
-    !Component.prototype.shouldComponentUpdate,
-    `pureRelayClass: \`${componentName}\` already has ` +
-    `\`shouldComponentUpdate\``
-  );
+let defaultPurePlotDecorator;
 
-  const originalComponentWillMount = Component.prototype.componentWillMount;
-  if (originalComponentWillMount) {
-    Component.prototype.componentWillMount =
-      createChainedComponentWillMount(originalComponentWillMount);
-  } else {
-    Component.prototype.componentWillMount = componentWillMount;
+export default function purePlotClass(spec) {
+  // Use scales from context if given a component.
+  if (spec instanceof Function) {
+    return defaultPurePlotDecorator(spec);
   }
 
-  Component.prototype.shouldComponentUpdate = shouldComponentUpdate;
+  return function purePlotDecorator(Component) {
+    const componentName = Component.displayName || Component.name;
+    invariant(
+      Component.prototype,
+      `pureRelayClass: \`${componentName}\` does not have a prototype`
+    );
+    invariant(
+      !Component.prototype.shouldComponentUpdate,
+      `pureRelayClass: \`${componentName}\` already has ` +
+      `\`shouldComponentUpdate\``
+    );
+
+    const originalComponentWillMount = Component.prototype.componentWillMount;
+    if (originalComponentWillMount) {
+      Component.prototype.componentWillMount =
+        generateChainedComponentWillMount(originalComponentWillMount, spec);
+    } else {
+      Component.prototype.componentWillMount =
+        generateComponentWillMount(spec);
+    }
+
+    Component.prototype.shouldComponentUpdate =
+      generateShouldComponentUpdate(spec);
+  };
 }
+
+defaultPurePlotDecorator = purePlotClass({
+  xScale: ({context}) => context.xScale,
+  yScale: ({context}) => context.yScale
+});

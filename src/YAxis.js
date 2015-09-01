@@ -2,10 +2,8 @@ import React from 'react';
 
 import Axis from './Axis';
 import {positionType} from './PropTypes';
-import purePlotClass from './utils/purePlotClass';
 import transforms from './utils/transforms';
 
-@purePlotClass
 export default class YAxis extends React.Component {
   static propTypes = {
     position: positionType,
