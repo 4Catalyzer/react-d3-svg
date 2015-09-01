@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import {regionType} from './PropTypes';
-import cloneChildren from './utils/cloneChildren';
+import './utils/patchReactReconciler';
 import transforms from './utils/transforms';
 
 const REDRAW_EVENT_TYPE = 'zoom.redraw';
@@ -184,7 +184,7 @@ export default class ZoomArea extends React.Component {
           fill="none" style={{pointerEvents: 'all'}}
         />
 
-        {cloneChildren(children)}
+        {children}
       </g>
     );
   }

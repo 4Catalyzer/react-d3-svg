@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Plot from './Plot';
-import cloneChildren from './utils/cloneChildren';
+import './utils/patchReactReconciler';
 
 // TODO: Use PlotCanvas component once Chrome fixes foreignObject rendering.
 
@@ -37,7 +37,7 @@ export default class PlotWithCanvas extends Plot {
           left: marginLeft,
           zIndex: -1
         }}>
-          {cloneChildren(canvas)}
+          {canvas}
         </div>
       );
     }

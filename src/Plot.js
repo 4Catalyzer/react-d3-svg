@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import cloneChildren from './utils/cloneChildren';
+import './utils/patchReactReconciler';
 import throttleAnimation from './utils/throttleAnimation';
 
 export default class Plot extends React.Component {
@@ -174,7 +174,7 @@ export default class Plot extends React.Component {
     if (width != null && height != null) {
       plotBody = (
         <g transform={`translate(${marginLeft},${marginTop})`}>
-          {cloneChildren(children)}
+          {children}
         </g>
       );
     }
