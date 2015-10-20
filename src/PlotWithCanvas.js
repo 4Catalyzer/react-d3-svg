@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Plot from './Plot';
-import './utils/patchReactReconciler';
 
 // TODO: Use PlotCanvas component once Chrome fixes foreignObject rendering.
 

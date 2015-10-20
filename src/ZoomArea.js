@@ -3,7 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import {regionType} from './PropTypes';
-import './utils/patchReactReconciler';
 import transforms from './utils/transforms';
 
 const REDRAW_EVENT_TYPE = 'zoom.redraw';

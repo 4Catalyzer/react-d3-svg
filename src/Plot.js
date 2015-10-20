@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import './utils/patchReactReconciler';
 import throttleAnimation from './utils/throttleAnimation';
 
 export default class Plot extends React.Component {
