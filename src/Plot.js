@@ -42,6 +42,7 @@ export default class Plot extends React.Component {
     this.state = {width, height};
 
     this.hasResizeListener = false;
+    this.needsRedraw = false;
   }
 
   getChildContext() {
@@ -84,6 +85,7 @@ export default class Plot extends React.Component {
 
   componentDidUpdate() {
     this.syncResizeListener();
+    this.needsRedraw = false;
   }
 
   componentWillUnmount() {
@@ -161,7 +163,17 @@ export default class Plot extends React.Component {
     }
   }
 
-  redraw = throttleAnimation(() => {
+  redraw = () => {
+    this.needsRedraw = true;
+
+    // Only redraw if we haven't otherwise re-rendered.
+    this.redrawIfNeeded();
+  };
+
+  redrawIfNeeded = throttleAnimation(() => {
+    if (!this.needsRedraw) {
+      return;
+    }
     this.forceUpdate();
   });
 
