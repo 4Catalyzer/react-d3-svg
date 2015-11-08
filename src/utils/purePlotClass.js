@@ -21,13 +21,13 @@ function updateScaleValues(element, values, spec) {
   element._scaleValues = scaleValues;
 }
 
-function generateComponentWillMount(spec) {
+function createComponentWillMount(spec) {
   return function componentWillMount() {
     updateScaleValues(this, this, spec);
   };
 }
 
-function generateChainedComponentWillMount(original, spec) {
+function createChainedComponentWillMount(original, spec) {
   return function componentWillMount() {
     original.call(this);
     updateScaleValues(this, this, spec);
@@ -45,8 +45,12 @@ function isScaleEqual(scale, scaleValues) {
     nextRange[1] === range[1];
 }
 
-function generateShouldComponentUpdate(spec) {
+function createShouldComponentUpdate(spec) {
   return function shouldComponentUpdate(nextProps, nextState, nextContext) {
+    if (nextProps.shouldUpdate != null) {
+      return nextProps.shouldUpdate;
+    }
+
     const nextValues = {
       props: nextProps,
       state: nextState,
@@ -93,14 +97,14 @@ export default function purePlotClass(spec) {
     const originalComponentWillMount = Component.prototype.componentWillMount;
     if (originalComponentWillMount) {
       Component.prototype.componentWillMount =
-        generateChainedComponentWillMount(originalComponentWillMount, spec);
+        createChainedComponentWillMount(originalComponentWillMount, spec);
     } else {
       Component.prototype.componentWillMount =
-        generateComponentWillMount(spec);
+        createComponentWillMount(spec);
     }
 
     Component.prototype.shouldComponentUpdate =
-      generateShouldComponentUpdate(spec);
+      createShouldComponentUpdate(spec);
   };
 }
 

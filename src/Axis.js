@@ -1,7 +1,9 @@
 import React from 'react';
 
 import {directionType} from './PropTypes';
+import purePlotClass from './utils/purePlotClass';
 
+@purePlotClass({scale: ({props}) => props.scale})
 export default class Axis extends React.Component {
   static propTypes = {
     scale: React.PropTypes.func.isRequired,
@@ -12,6 +14,7 @@ export default class Axis extends React.Component {
     ticks: React.PropTypes.any.isRequired,
     tickValues: React.PropTypes.array,
     tickFormat: React.PropTypes.func,
+    shouldUpdate: React.PropTypes.bool,  // For purePlotClass.
     children: React.PropTypes.node
   };
 
