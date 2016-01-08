@@ -13,7 +13,7 @@ export default class Plot extends React.Component {
     marginLeft: React.PropTypes.number.isRequired,
     xScale: React.PropTypes.func,
     yScale: React.PropTypes.func,
-    children: React.PropTypes.node
+    children: React.PropTypes.node,
   };
 
   static childContextTypes = {
@@ -25,39 +25,39 @@ export default class Plot extends React.Component {
     marginLeft: React.PropTypes.number.isRequired,
     xScale: React.PropTypes.func,
     yScale: React.PropTypes.func,
-    redraw: React.PropTypes.func.isRequired
+    redraw: React.PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     marginTop: 0,
     marginRight: 0,
     marginBottom: 0,
-    marginLeft: 0
+    marginLeft: 0,
   };
 
   constructor(props, context) {
     super(props, context);
 
-    const {width, height} = props;
-    this.state = {width, height};
+    const { width, height } = props;
+    this.state = { width, height };
 
     this.hasResizeListener = false;
     this.needsRedraw = false;
   }
 
   getChildContext() {
-    const {width, height} = this.getBodyDimensions();
+    const { width, height } = this.getBodyDimensions();
     const {
       marginTop, marginRight, marginLeft, marginBottom,
-      xScale, yScale
+      xScale, yScale,
     } = this.props;
-    const {redraw} = this;
+    const { redraw } = this;
 
     return {
       width, height,
       marginTop, marginRight, marginLeft, marginBottom,
       xScale, yScale,
-      redraw
+      redraw,
     };
   }
 
@@ -70,12 +70,12 @@ export default class Plot extends React.Component {
     this.syncResizeListener();
   }
 
-  componentWillReceiveProps({width, height}) {
+  componentWillReceiveProps({ width, height }) {
     if (width != null) {
-      this.setState({width});
+      this.setState({ width });
     }
     if (height != null) {
-      this.setState({height});
+      this.setState({ height });
     }
   }
 
@@ -96,24 +96,24 @@ export default class Plot extends React.Component {
     this.updateSize();
   });
 
-  getBodyDimensions({width: totalWidth, height: totalHeight} = this.state) {
+  getBodyDimensions({ width: totalWidth, height: totalHeight } = this.state) {
     let width;
     let height;
 
     if (totalWidth != null) {
-      const {marginLeft, marginRight} = this.props;
+      const { marginLeft, marginRight } = this.props;
       width = totalWidth - marginLeft - marginRight;
     }
     if (totalHeight != null) {
-      const {marginTop, marginBottom} = this.props;
+      const { marginTop, marginBottom } = this.props;
       height = totalHeight - marginTop - marginBottom;
     }
 
-    return {width, height};
+    return { width, height };
   }
 
-  updateScales({xScale, yScale}, state) {
-    const {width, height} = this.getBodyDimensions(state);
+  updateScales({ xScale, yScale }, state) {
+    const { width, height } = this.getBodyDimensions(state);
     if (xScale && width != null) {
       xScale.range([0, width]);
     }
@@ -123,24 +123,25 @@ export default class Plot extends React.Component {
   }
 
   updateSize() {
-    const {width: propsWidth, height: propsHeight} = this.props;
+    const { width: propsWidth, height: propsHeight } = this.props;
     if (propsWidth != null && propsHeight != null) {
       return;
     }
 
-    const {width: lastWidth, height: lastHeight} = this.state;
-    const {width, height} = ReactDOM.findDOMNode(this).getBoundingClientRect();
+    const { width: lastWidth, height: lastHeight } = this.state;
+    const { width, height } =
+      ReactDOM.findDOMNode(this).getBoundingClientRect();
 
     if (propsWidth == null && width !== lastWidth) {
-      this.setState({width});
+      this.setState({ width });
     }
     if (propsHeight == null && height !== lastHeight) {
-      this.setState({height});
+      this.setState({ height });
     }
   }
 
   syncResizeListener() {
-    const {width, height} = this.props;
+    const { width, height } = this.props;
     if (width == null || height == null) {
       this.addResizeListener();
     } else {
@@ -178,8 +179,8 @@ export default class Plot extends React.Component {
   });
 
   render() {
-    const {marginTop, marginLeft, children, ...props} = this.props;
-    const {width, height} = this.state;
+    const { marginTop, marginLeft, children, ...props } = this.props;
+    const { width, height } = this.state;
 
     let plotBody;
     if (width != null && height != null) {

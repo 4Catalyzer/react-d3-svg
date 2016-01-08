@@ -8,36 +8,36 @@ function getScaleValues(scale) {
 
   return {
     domain: scale.domain(),
-    range: scale.range()
+    range: scale.range(),
   };
 }
 
-function updateScaleValues(element, values, spec) {
+function updateScaleValues(values, spec) {
   const scaleValues = {};
   Object.keys(spec).forEach(key => {
     scaleValues[key] = getScaleValues(spec[key](values));
   });
 
-  element._scaleValues = scaleValues;
+  this._scaleValues = scaleValues;
 }
 
 function createComponentWillMount(spec) {
   return function componentWillMount() {
-    updateScaleValues(this, this, spec);
+    updateScaleValues.call(this, this, spec);
   };
 }
 
 function createChainedComponentWillMount(original, spec) {
   return function componentWillMount() {
     original.call(this);
-    updateScaleValues(this, this, spec);
+    updateScaleValues.call(this, this, spec);
   };
 }
 
 function isScaleEqual(scale, scaleValues) {
   const nextDomain = scale.domain();
   const nextRange = scale.range();
-  const {domain, range} = scaleValues;
+  const { domain, range } = scaleValues;
 
   return nextDomain[0] === domain[0] &&
     nextDomain[1] === domain[1] &&
@@ -54,7 +54,7 @@ function createShouldComponentUpdate(spec) {
     const nextValues = {
       props: nextProps,
       state: nextState,
-      context: nextContext
+      context: nextContext,
     };
 
     const hasChange =
@@ -66,7 +66,7 @@ function createShouldComponentUpdate(spec) {
       );
 
     if (hasChange) {
-      updateScaleValues(this, nextValues, spec);
+      updateScaleValues.call(this, nextValues, spec);
       return true;
     }
 
@@ -95,20 +95,24 @@ export default function purePlotClass(spec) {
     );
 
     const originalComponentWillMount = Component.prototype.componentWillMount;
+    let componentWillMount;
     if (originalComponentWillMount) {
-      Component.prototype.componentWillMount =
+      componentWillMount =
         createChainedComponentWillMount(originalComponentWillMount, spec);
     } else {
-      Component.prototype.componentWillMount =
-        createComponentWillMount(spec);
+      componentWillMount = createComponentWillMount(spec);
     }
 
-    Component.prototype.shouldComponentUpdate =
-      createShouldComponentUpdate(spec);
+    const shouldComponentUpdate = createShouldComponentUpdate(spec);
+
+    // Mutating the class in-place avoids edge conditions with copying.
+    Object.assign(Component.prototype, {
+      componentWillMount, shouldComponentUpdate,
+    });
   };
 }
 
 defaultPurePlotDecorator = purePlotClass({
-  xScale: ({context}) => context.xScale,
-  yScale: ({context}) => context.yScale
+  xScale: ({ context }) => context.xScale,
+  yScale: ({ context }) => context.yScale,
 });
