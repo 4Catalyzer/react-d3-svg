@@ -1,9 +1,9 @@
 import React from 'react';
 
-import {directionType} from './PropTypes';
+import { directionType } from './PropTypes';
 import purePlotClass from './utils/purePlotClass';
 
-@purePlotClass({scale: ({props}) => props.scale})
+@purePlotClass({ scale: ({ props }) => props.scale })
 export default class Axis extends React.Component {
   static propTypes = {
     scale: React.PropTypes.func.isRequired,
@@ -14,15 +14,15 @@ export default class Axis extends React.Component {
     ticks: React.PropTypes.any.isRequired,
     tickValues: React.PropTypes.array,
     tickFormat: React.PropTypes.func,
-    shouldUpdate: React.PropTypes.bool,  // For purePlotClass.
-    children: React.PropTypes.node
+    shouldUpdate: React.PropTypes.bool, // For purePlotClass.
+    children: React.PropTypes.node,
   };
 
   static defaultProps = {
     innerTickSize: 6,
     outerTickSize: 6,
     tickPadding: 3,
-    ticks: [10]
+    ticks: [10],
   };
 
   render() {
@@ -36,7 +36,7 @@ export default class Axis extends React.Component {
       tickValues,
       tickFormat: tickFormatIn,
       children,
-      ...props
+      ...props,
     } = this.props;
 
     let tickArguments;
@@ -77,23 +77,23 @@ export default class Axis extends React.Component {
 
     if (orient === 'top' || orient === 'bottom') {
       tickTransform = d => `translate(${scale(d)},0)`;
-      lineProps = {x2: 0, y2: innerTickMove};
+      lineProps = { x2: 0, y2: innerTickMove };
       textProps = {
         x: 0,
         y: tickSpacingMove,
         dy: sign < 0 ? '0em' : '.71em',
-        style: {textAnchor: 'middle'}
+        style: { textAnchor: 'middle' },
       };
 
       pathD = `M${rangeStart},${outerTickMove}V0H${rangeEnd}V${outerTickMove}`;
     } else {
       tickTransform = d => `translate(0,${scale(d)})`;
-      lineProps = {x2: innerTickMove, y2: 0};
+      lineProps = { x2: innerTickMove, y2: 0 };
       textProps = {
         x: tickSpacingMove,
         y: 0,
         dy: '.32em',
-        style: {textAnchor: sign < 0 ? 'end' : 'start'}
+        style: { textAnchor: sign < 0 ? 'end' : 'start' },
       };
 
       pathD = `M${outerTickMove},${rangeStart}H0V${rangeEnd}H${outerTickMove}`;

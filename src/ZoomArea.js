@@ -2,7 +2,7 @@ import d3 from 'd3';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {regionType} from './PropTypes';
+import { regionType } from './PropTypes';
 import transforms from './utils/transforms';
 
 const REDRAW_EVENT_TYPE = 'zoom.redraw';
@@ -13,7 +13,7 @@ export default class ZoomArea extends React.Component {
     region: regionType.isRequired,
     clipPathId: React.PropTypes.string,
     transform: React.PropTypes.string,
-    children: React.PropTypes.node
+    children: React.PropTypes.node,
   };
 
   static contextTypes = {
@@ -23,11 +23,11 @@ export default class ZoomArea extends React.Component {
     marginRight: React.PropTypes.number.isRequired,
     marginBottom: React.PropTypes.number.isRequired,
     marginLeft: React.PropTypes.number.isRequired,
-    redraw: React.PropTypes.func.isRequired
+    redraw: React.PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    region: 'center'
+    region: 'center',
   };
 
   constructor(props, context) {
@@ -39,7 +39,7 @@ export default class ZoomArea extends React.Component {
     this.syncZoomRange();
 
     // TODO: Handle the zoom object changing.
-    const {zoom} = props;
+    const { zoom } = props;
     let i = 0;
     while (zoom.on(`${REDRAW_EVENT_TYPE}.${i}`)) {
       ++i;
@@ -56,7 +56,7 @@ export default class ZoomArea extends React.Component {
   }
 
   syncZoomRange() {
-    const {zoom} = this.props;
+    const { zoom } = this.props;
     const x = zoom.x();
     const y = zoom.y();
 
@@ -119,43 +119,43 @@ export default class ZoomArea extends React.Component {
   }
 
   calculatePosition() {
-    const {region} = this.props;
+    const { region } = this.props;
 
-    let {width, height} = this.context;
+    let { width, height } = this.context;
     if (region === 'center') {
-      return {width, height};
+      return { width, height };
     }
 
     let xTranslate = 0;
     let yTranslate = 0;
 
     if (region === 'top') {
-      const {marginTop} = this.context;
+      const { marginTop } = this.context;
       yTranslate = -marginTop;
       height = marginTop;
     } else if (region === 'right') {
-      const {marginRight} = this.context;
+      const { marginRight } = this.context;
       xTranslate = width;
       width = marginRight;
     } else if (region === 'bottom') {
-      const {marginBottom} = this.context;
+      const { marginBottom } = this.context;
       yTranslate = height;
       height = marginBottom;
     } else if (region === 'left') {
-      const {marginLeft} = this.context;
+      const { marginLeft } = this.context;
       xTranslate = -marginLeft;
       width = marginLeft;
     }
 
     return {
       positionTransform: `translate(${xTranslate},${yTranslate})`,
-      width, height
+      width, height,
     };
   }
 
   render() {
-    const {clipPathId, transform, children, ...props} = this.props;
-    const {positionTransform, width, height} = this.calculatePosition();
+    const { clipPathId, transform, children, ...props } = this.props;
+    const { positionTransform, width, height } = this.calculatePosition();
 
     let clipPath;
     let clipPathDef;
@@ -180,7 +180,7 @@ export default class ZoomArea extends React.Component {
 
         <rect
           width={width} height={height}
-          fill="none" style={{pointerEvents: 'all'}}
+          fill="none" style={{ pointerEvents: 'all' }}
         />
 
         {children}

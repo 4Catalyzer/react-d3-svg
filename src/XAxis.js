@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Axis from './Axis';
-import {positionType} from './PropTypes';
+import { positionType } from './PropTypes';
 import purePlotClass from './utils/purePlotClass';
 import transforms from './utils/transforms';
 
@@ -10,22 +10,22 @@ export default class XAxis extends React.Component {
   static propTypes = {
     position: positionType,
     transform: React.PropTypes.string,
-    shouldUpdate: React.PropTypes.bool  // For purePlotClass.
+    shouldUpdate: React.PropTypes.bool, // For purePlotClass.
   };
 
   static contextTypes = {
     xScale: React.PropTypes.func,
-    yScale: React.PropTypes.func
+    yScale: React.PropTypes.func,
   };
 
   render() {
-    const {position, transform, ...props} = this.props;
+    const { position, transform, ...props } = this.props;
 
     let positionTransform;
     if (position == null) {
       positionTransform = null;
     } else {
-      const {yScale} = this.context;
+      const { yScale } = this.context;
       let yTranslate;
 
       if (position === 'start') {

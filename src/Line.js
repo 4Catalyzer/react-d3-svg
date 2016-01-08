@@ -8,11 +8,11 @@ export default class Line extends React.Component {
     y: React.PropTypes.func,
     defined: React.PropTypes.func,
     interpolate: React.PropTypes.string,
-    tension: React.PropTypes.string
+    tension: React.PropTypes.string,
   };
 
   render() {
-    const {data, x, y, defined, interpolate, tension, ...props} = this.props;
+    const { data, x, y, defined, interpolate, tension, ...props } = this.props;
 
     const line = d3.svg.line();
 
