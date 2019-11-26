@@ -1,2 +1,1 @@
-# react-d3-svg
-D3 SVG components for React
+# This package is no longer used or maintained.
